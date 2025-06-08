@@ -1,6 +1,5 @@
 /.env
-/config
-/dags
+/config/*
 /logs
-/plugins
-/volume
+volume/
+*/__pycache__/
