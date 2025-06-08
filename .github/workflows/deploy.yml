@@ -1,0 +1,38 @@
+name: airflow_vps.deployment
+
+on:
+    push:
+        branches:
+            - main
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Build
+              run: echo Build the app
+    deploy-development:
+        runs-on: ubuntu-latest
+        environment: PRD
+        needs: build
+        steps:
+            - name: Repo Checkout
+              uses: actions/checkout@v2
+            - name: Hostinger Deployment
+              uses: easingthemes/ssh-deploy@main
+              with:
+                SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+                ARGS: "-rlgoDzvc --delete"
+                SOURCE: "/"
+                REMOTE_HOST: ${{ vars.REMOTE_HOST }}
+                REMOTE_USER: ${{ vars.REMOTE_USER }}
+                REMOTE_PORT: ${{ vars.REMOTE_PORT }}
+                TARGET: ${{ vars.TARGET }}
+                SCRIPT_BEFORE: |
+                  mkdir -p ${{ vars.TARGET }}
+                  cd ${{ vars.TARGET }}
+                  docker-compose down
+                SCRIPT_AFTER: |
+                  cd ${{ vars.TARGET }}
+                  docker-compose up -d --build
