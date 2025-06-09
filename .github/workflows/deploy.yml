@@ -32,7 +32,7 @@ jobs:
                 SCRIPT_BEFORE: |
                   mkdir -p ${{ vars.TARGET }}
                   cd ${{ vars.TARGET }}
-                  docker-compose down
+                  docker compose down
                 SCRIPT_AFTER: |
                   cd ${{ vars.TARGET }}
-                  docker-compose up -d --build
+                  docker compose up -d --build
